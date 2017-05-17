@@ -1,0 +1,21 @@
+{% extends '::page.html.twig' %}
+
+{% block body %}
+
+    {{ render_pattern(contentHeader) }}
+
+    <div class="wrapper u-pad-top-lg">
+
+        <div class="grid">
+
+            <div class="grid__item medium--twelve-twelfths">
+
+                {{ render_pattern(form) }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

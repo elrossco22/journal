@@ -383,27 +383,95 @@
 
     {{ parent() }}
 
-    <script>
-        if (!!document.createElement('div').dataset) {
-            var disqus_config = function () {
-                this.page.url = '{{ url('article', {id: article.id}) }}';
-                this.page.title = '{{ article.fullTitle|striptags }}';
-                this.page.identifier = 'article:{{ article.id }}';
-            };
-
-            (function () {
-                var d = document, s = d.createElement('script'), c = document.getElementById('disqus-comment-count');
-                s.id = 'dsq-count-scr';
-                s.src = 'https://{{ disqus_domain }}.disqus.com/count.js';
-                s.async = true;
-                s.addEventListener('error', function () {
-                    {# Do nothing #}
-                });
-                c.classList.add('disqus-comment-count');
-                c.setAttribute('data-disqus-identifier', 'article:{{ article.id }}');
-                d.head.appendChild(s);
-            })();
+<script>
+  function ajax_get(url, callback) {
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        try {
+          var data = JSON.parse(xmlhttp.responseText);
+        } catch(err) {
+          return;
         }
-    </script>
+        callback(data);
+      }
+    };
+
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+  }
+  function hypothes_is_config(jwt) {
+    config = {
+      disableToolbarCloseBtn:false,
+      disableToolbarMinimizeBtn: true,
+      disableToolbarHighlightsBtn: true,
+      disableToolbarNewNoteBtn: true,
+      disableBucketBar: true,
+      enableSidebarDropShadow: true,
+      enableExperimentalNewNoteButton: true,
+      enableCleanOnboardingTheme: true,
+      theme: 'clean',
+      usernameUrl: '{{ absolute_url('/user/') }}',
+      showHighlights: 'whenSidebarOpen',
+      branding: {
+        accentColor: '#0288D1',
+        appBackgroundColor: 'white',
+        ctaBackgroundColor: '#0288D1',
+        ctaTextColor: 'white',
+        selectionFontFamily: 'Georgia, Times, serif',
+        annotationFontFamily: 'Georgia, Times, serif'
+      },
+      services: [{
+        apiUrl: 'https://hypothes.is/api/',
+        authority: 'test.elifesciences.org',
+        icon: window.location.protocol + '//' + window.location.host +  + '/assets/favicons/android-chrome-512x512.0bd67873.png',
+        onLoginRequest: function () {
+          window.location.replace('/logout?destination='+window.location.pathname);
+        },
+        onLogoutRequest: function () {
+          window.location.replace('/logout?destination='+window.location.pathname);
+        },
+        onSignupRequest: function () {
+          window.location.replace('/register');
+        },
+        onProfileRequest: function () {
+          window.location.replace('/user');
+        }
+      }]
+    };
+    if (jwt) {
+      config.services[0].grantToken = jwt;
+    }
+    window.hypothesisConfig = function () {
+      return config;
+    };
+    // Append JS so we know config is available before initialised.
+    jsAppend('https://hypothes.is/embed.js', true);
+  }
+  function hypothes_is() {
+    document.getElementById('hypothesis-comment-count').setAttribute('data-hypothesis-annotation-count', '');
+    document.getElementById('hypothesis-comment-count').previousElementSibling.setAttribute('data-hypothesis-trigger', '');
+    // Retrieve jwt grant token.
+    ajax_get('/auth', function (data) {
+      if (data.jwt) {
+        hypothes_is_config(data.jwt);
+      }
+      else {
+        hypothes_is_config();
+      }
+    });
+  }
+  function jsAppend(js_file, async) {
+    js_script = document.createElement('script');
+    js_script.type = "text/javascript";
+    js_script.src = js_file;
+    if (async) {
+      js_script.async = true;
+    }
+    document.getElementsByTagName('body')[0].appendChild(js_script);
+  }
+
+  hypothes_is();
+</script>
 
 {% endblock %}

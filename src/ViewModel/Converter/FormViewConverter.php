@@ -99,6 +99,11 @@ final class FormViewConverter implements ViewModelConverter
                     }
 
                     return $field;
+                case 'password':
+                    return ViewModel\TextField::passwordInput(new ViewModel\FormLabel($this->getLabel($object), $object->vars['id']),
+                        $object->vars['id'], $object->vars['full_name'], $object->vars['attr']['placeholder'] ?? null,
+                        $object->vars['required'], $object->vars['disabled'], $object->vars['attr']['autofocus'] ?? false, $object->vars['value'],
+                        $this->getState($object));
                 case 'textarea':
                     return new ViewModel\TextArea(new ViewModel\FormLabel($this->getLabel($object)),
                         $object->vars['id'],

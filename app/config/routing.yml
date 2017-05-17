@@ -14,6 +14,39 @@ home:
     defaults:
          _controller: AppBundle:Home:home
 
+auth:
+    path: /auth
+    defaults:
+         _controller: AppBundle:Auth:auth
+
+register:
+    path: /register
+    defaults:
+         _controller: AppBundle:Auth:register
+
+login:
+    path: /login
+    defaults:
+         _controller: AppBundle:Auth:login
+
+logout:
+    path: /logout
+    defaults:
+         _controller: AppBundle:Auth:logout
+
+dummy-profile:
+    path: /user/{uid}
+    defaults:
+         _controller: AppBundle:Auth:profile
+         uid: 0
+    requirements:
+        id: '[a-z0-9-]+'
+
+wtf:
+    path: /wtf
+    defaults:
+         _controller: AppBundle:Auth:list
+
 about:
     path: /about
     defaults:

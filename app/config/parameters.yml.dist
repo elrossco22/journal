@@ -22,3 +22,10 @@ parameters:
     oauth2_client_id: some-id
     oauth2_client_secret: ThisIsASecret
     feature_can_view_webp_countries: ['GB']
+    hypothes_is_authority: ~
+    hypothes_is_client_id_jwt: ~
+    hypothes_is_client_secret_jwt: ~
+    hypothes_is_client_id_create_user: ~
+    hypothes_is_client_secret_create_user: ~
+    hypothes_is_group: ijDGibQE
+    hypothes_is_api_url: https://hypothes.is/api/

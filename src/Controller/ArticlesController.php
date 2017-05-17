@@ -774,7 +774,7 @@ final class ArticlesController extends Controller
                     $metrics[] = new ViewModel\ContextualDataMetric('Views', number_format($pageViews));
                 }
 
-                $metrics[] = new ViewModel\ContextualDataMetric('Comments', 0, 'disqus-comment-count');
+                $metrics[] = new ViewModel\ContextualDataMetric('Comments', 0, 'hypothesis-comment-count');
 
                 if (!$article->getCiteAs()) {
                     return ContextualData::withMetrics($metrics);
